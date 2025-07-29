@@ -1,7 +1,7 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
 import TheWelcome from './components/TheWelcome.vue'
-import YaoZhang from './components/YaoZhang.vue';
+import YaoZhang from './components/MyName.vue';
 </script>
 
 <template>
