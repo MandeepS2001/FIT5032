@@ -9,7 +9,6 @@
 
       <h3>Iterating through Arrays</h3>
       <!-- Activity 6: Render a list containing author names and their birth years. Hint: Make use of the v-for directive to iterate through the array of authors. -->
-      <!-- TODO: CODE TO RENDER LIST OF AUTHORS HERE -->
       <ul>
         <li v-for="author in authors" :key="author.id">
           {{ author.name }} ({{ author.birthYear }})
@@ -19,7 +18,6 @@
       <h3>Filtering Arrays</h3>
       <!-- Activity 7: Render a list containing authors born after 1850. Hint: Make use of the v-for directive to iterate through the array of authors that you have filtered out. -->
       <p>Authors born after 1850:</p>
-      <!-- TODO: CODE TO RENDER LIST OF AUTHORS HERE -->
       <ul>
         <li v-for="author in modernAuthors" :key="author.id">
           {{ author.name }} ({{ author.birthYear }})
@@ -30,7 +28,6 @@
       <p>Famous works:</p>
       <ul>
         <!-- Activity 8: Render a list of all famous works. Hint: Use the v-for directive to iterate through the array of authors that you have filtered out. -->
-        <!-- TODO: CODE TO RENDER LIST OF FAMOUS WORKS HERE -->
         <li v-for="work in allFamousWorks" :key="work">
           {{ work }}
         </li>
@@ -42,7 +39,11 @@
       <h3>Nested Arrays/Objects</h3>
       <p>{{ austen?.name }}'s works:</p>
       <!-- Activity 9: Render a list of Austen's works. Hint: Use the v-for directive to iterate through the array of authors that you have filtered out. -->
-      <!-- TODO: CODE TO RENDER LIST OF AUSTEN'S WORKS HERE -->
+      <ul>
+        <li v-for="author in austen?.famousWorks" :key="author.id">
+          {{ author.title }} ({{ author.year }})
+        </li>
+      </ul>
     </section>
 
     <section class="lab-section">
@@ -103,9 +104,8 @@
 import { ref, computed } from "vue"
 
 // Activity 1: Import JSON files (authors.json and bookstores.json)
-// TODO: CODE TO IMPORT JSON FILES HERE
 import authors from '../assets/json/authors.json';
-import bookstores from '../assets/json/bookstores.json';
+// import bookstores from '../assets/json/bookstores.json';
 
 const showMessage = ref(false)
 
@@ -120,16 +120,14 @@ const allFamousWorks = computed(() =>
 );
 
 // Activity 4: Find author by name
-const orwell = computed((newName) => {
-  // TODO: CODE TO FIND AUTHOR BY NAME HERE
-  console.log(newName)
-  return authors.filter((author) => author.name == newName)
-})
+const orwell = computed(() =>
+  authors.filter((author) => author.name == "George Orwell")[0]
+)
 
 // Activity 5: Find author by ID
-const austen = computed(() => {
-  // TODO: CODE TO FIND AUTHOR BY ID HERE
-})
+const austen = computed(() =>
+  authors.filter((author) => author.id == 3)[0]
+)
 </script>
 
 <style scoped>
