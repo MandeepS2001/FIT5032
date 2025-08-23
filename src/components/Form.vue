@@ -18,8 +18,9 @@ const submitForm = () => {
     validateName(true);
     validatePassword(true);
     validateConfirmPassword(true);
+    validateReason(true);
 
-    if (!errors.value.username && !errors.value.password && !errors.value.confirmPassword && formData.value.gender && formData.value.reason) {
+    if (!errors.value.username && !errors.value.password && !errors.value.confirmPassword && !errors.value.reason && formData.value.gender && formData.value.reason) {
         submittedCards.value.push({
             ...formData.value
         });
@@ -97,6 +98,18 @@ const validateConfirmPassword = (blur) => {
         errors.value.confirmPassword = null
     }
 }
+
+/**
+ * Reason validation function that checks if the reason field meets the minimum character requirement.
+ * @param blur: boolean - If true, the function will display an error message if the reason is too short.
+ */
+const validateReason = (blur) => {
+    if (formData.value.reason.length < 10) {
+        if (blur) errors.value.reason = 'Reason must be at least 10 characters'
+    } else {
+        errors.value.reason = null
+    }
+}
 </script>
 
 <template>
@@ -172,9 +185,23 @@ const validateConfirmPassword = (blur) => {
                     <div class="mb-3">
                         <label for="reason" class="form-label">Reason for joining</label>
                         <div class="position-relative">
-                            <textarea class="form-control" id="reason" rows="3" minlength="10" maxlength="100"
-                                v-model="formData.reason"></textarea>
+                            <textarea 
+                                class="form-control" 
+                                id="reason" 
+                                rows="3" 
+                                minlength="10" 
+                                maxlength="100"
+                                v-model="formData.reason"
+                                @blur="() => validateReason(true)"
+                                @input="() => validateReason(false)"
+                            ></textarea>
+                            <div class="position-absolute bottom-0 end-0 mb-2 me-2">
+                                <span class="badge bg-success me-1">💡</span>
+                                <span class="badge bg-danger">1</span>
+                            </div>
                         </div>
+                        <div v-if="errors.reason" class="text-danger">{{ errors.reason }}</div>
+                        <div v-else-if="formData.reason.length >= 10" class="text-success">Great to have a friend</div>
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary me-2">Submit</button>
@@ -292,8 +319,33 @@ const validateConfirmPassword = (blur) => {
     font-size: 1.2rem;
 }
 
+/* 卡片文本样式 */
+.card-text {
+    margin-bottom: 0;
+}
+
+/* 验证消息样式 */
+.text-success {
+    font-weight: 500;
+    font-style: italic;
+}
+
+.text-danger {
+    font-weight: 500;
+}
+
+/* 图标样式 */
 .badge {
     font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+.badge.bg-success {
+    background-color: #28a745 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
 }
 
 .card-header {
@@ -302,14 +354,6 @@ const validateConfirmPassword = (blur) => {
 
 .card-title {
     font-size: 1.1rem;
-}
-
-.card-text {
-    margin-bottom: 0.5rem;
-}
-
-.card-text:last-child {
-    margin-bottom: 0;
 }
 
 .col-md-3 {
@@ -343,10 +387,6 @@ const validateConfirmPassword = (blur) => {
 .card-line:last-child {
     border-bottom: none;
     padding-bottom: 0;
-    margin-bottom: 0;
-}
-
-.card-text {
     margin-bottom: 0;
 }
 </style>
