@@ -1,6 +1,7 @@
 import './assets/main.css'
 import './style.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 import PrimeVue from 'primevue/config'
 import Aura from '@primevue/themes/aura'
 
@@ -14,4 +15,4 @@ app.use(PrimeVue, {
   },
 })
 
-createApp(App).mount('#app')
+app.mount('#app')
