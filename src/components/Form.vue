@@ -9,7 +9,8 @@ const formData = ref({
     confirmPassword: '',
     isAustralian: false,
     reason: '',
-    gender: ''
+    gender: '',
+    suburb: 'Clayton'
 });
 
 const submittedCards = ref([]);
@@ -39,7 +40,8 @@ const clearForm = () => {
         confirmPassword: '',
         isAustralian: false,
         reason: '',
-        gender: ''
+        gender: '',
+        suburb: 'Clayton'
     }
 
     Object.keys(errors.value).forEach(key => {
@@ -132,9 +134,8 @@ const validateReason = (blur) => {
                     <h2 class="mb-0 me-2">W5. Library Registration Form</h2>
                     <i class="bi bi-server text-muted"></i>
                 </div>
-                <p class="text-muted mb-4">This form now includes validation. Registered users are displayed in a data
-                    table below (PrimeVue).</p>
-
+                <p class="text-muted mb-4">This form now includes validation. Registered users are displayed in a data table below (PrimeVue).</p>
+                
                 <form @submit.prevent="submitForm">
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -156,11 +157,9 @@ const validateReason = (blur) => {
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="password" class="form-label">Password</label>
-                            <div class="position-relative">
-                                <input type="password" class="form-control" id="password"
-                                    @blur="() => validatePassword(true)" @input="() => validatePassword(false)"
-                                    v-model="formData.password">
-                            </div>
+                            <input type="password" class="form-control" id="password"
+                                @blur="() => validatePassword(true)" @input="() => validatePassword(false)"
+                                v-model="formData.password">
                             <div v-if="errors.password" class="text-danger"> {{ errors.password }} </div>
                         </div>
                         <div class="col-md-6">
@@ -184,30 +183,28 @@ const validateReason = (blur) => {
                     </div>
                     <div class="mb-3">
                         <label for="reason" class="form-label">Reason for joining</label>
-                        <div class="position-relative">
-                            <textarea 
-                                class="form-control" 
-                                id="reason" 
-                                rows="3" 
-                                minlength="10" 
-                                maxlength="100"
-                                v-model="formData.reason"
-                                @blur="() => validateReason(true)"
-                                @input="() => validateReason(false)"
-                            ></textarea>
-                            <div class="position-absolute bottom-0 end-0 mb-2 me-2">
-                                <span class="badge bg-success me-1">💡</span>
-                                <span class="badge bg-danger">1</span>
-                            </div>
-                        </div>
+                        <textarea 
+                            class="form-control" 
+                            id="reason" 
+                            rows="3" 
+                            minlength="10" 
+                            maxlength="100"
+                            v-model="formData.reason"
+                            @blur="() => validateReason(true)"
+                            @input="() => validateReason(false)"
+                        ></textarea>
                         <div v-if="errors.reason" class="text-danger">{{ errors.reason }}</div>
-                        <div v-else-if="formData.reason.length >= 10" class="text-success">Great to have a friend</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="suburb" class="form-label">Suburb</label>
+                        <input type="text" class="form-control" id="suburb" v-bind:value="formData.suburb" />
                     </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary me-2">Submit</button>
                         <button type="button" class="btn btn-secondary" @click="clearForm">Clear</button>
                     </div>
                 </form>
+                
             </div>
         </div>
 
@@ -319,25 +316,8 @@ const validateReason = (blur) => {
     font-size: 1.2rem;
 }
 
-/* 卡片文本样式 */
-.card-text {
-    margin-bottom: 0;
-}
-
-/* 验证消息样式 */
-.text-success {
-    font-weight: 500;
-    font-style: italic;
-}
-
-.text-danger {
-    font-weight: 500;
-}
-
-/* 图标样式 */
 .badge {
     font-size: 0.75rem;
-    padding: 0.25rem 0.5rem;
 }
 
 .badge.bg-success {
@@ -346,47 +326,5 @@ const validateReason = (blur) => {
 
 .badge.bg-danger {
     background-color: #dc3545 !important;
-}
-
-.card-header {
-    border-bottom: none;
-}
-
-.card-title {
-    font-size: 1.1rem;
-}
-
-.col-md-3 {
-    flex: 0 0 25%;
-    max-width: 25%;
-}
-
-@media (max-width: 767.98px) {
-    .col-md-3 {
-        flex: 0 0 100%;
-        max-width: 100%;
-    }
-}
-
-.card.h-100 {
-    height: 100% !important;
-}
-
-.card-body {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.card-line {
-    border-bottom: 1px solid #e9ecef;
-    padding-bottom: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-.card-line:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-    margin-bottom: 0;
 }
 </style>
