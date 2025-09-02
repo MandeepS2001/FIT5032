@@ -13,13 +13,45 @@
           <router-link to="/about" class="nav-link" active-class="active">About</router-link
           >
         </li>
+        
+        <!-- Conditional rendering based on authentication status -->
+        <li class="nav-item" v-if="!isAuthenticated">
+          <router-link to="/login" class="nav-link" active-class="active">Login</router-link>
+        </li>
+        <li class="nav-item" v-else>
+          <button @click="handleLogout" class="nav-link btn btn-link">
+            Logout ({{ currentUser }})
+          </button>
+        </li>
       </ul>
     </header>
   </div>
 </template>
 
 <script setup>
-// No script needed for now
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+const isAuthenticated = ref(false);
+const currentUser = ref('');
+
+onMounted(() => {
+  checkAuthStatus();
+});
+
+const checkAuthStatus = () => {
+  isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true';
+  currentUser.value = localStorage.getItem('currentUser') || '';
+};
+
+const handleLogout = () => {
+  localStorage.removeItem('isAuthenticated');
+  localStorage.removeItem('currentUser');
+  isAuthenticated.value = false;
+  currentUser.value = '';
+  router.push('/login');
+};
 </script>
 
 <style scoped>
@@ -35,5 +67,18 @@
 
 .nav-pills .nav-link:hover {
   background-color: #e9ecef;
+}
+
+.btn-link {
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: #0d6efd;
+  padding: 0.5rem 1rem;
+}
+
+.btn-link:hover {
+  background-color: #e9ecef;
+  color: #0d6efd;
 }
 </style>

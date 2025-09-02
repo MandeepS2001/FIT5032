@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import BHeader from '../components/BHeader.vue';
@@ -15,6 +15,17 @@ const formData = ref({
 });
 
 const submittedCards = ref([]);
+const isAuthenticated = ref(false);
+const currentUser = ref('');
+
+onMounted(() => {
+    checkAuthStatus();
+});
+
+const checkAuthStatus = () => {
+    isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true';
+    currentUser.value = localStorage.getItem('currentUser') || '';
+};
 
 const submitForm = () => {
     validateName(true);
@@ -128,6 +139,16 @@ const validateReason = (blur) => {
                     <i class="bi bi-server text-muted"></i>
                 </div>
                 <p class="text-muted mb-4">This form now includes validation. Registered users are displayed in a data table below (PrimeVue).</p>
+                
+                <!-- Authentication Status Alert -->
+                <div v-if="isAuthenticated" class="alert alert-success mb-4">
+                    <i class="bi bi-check-circle me-2"></i>
+                    <strong>Welcome back, {{ currentUser }}!</strong> You are currently logged in and can access the About page.
+                </div>
+                <div v-else class="alert alert-info mb-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Guest User:</strong> You can use the registration form, but please <router-link to="/login" class="alert-link">login</router-link> to access the About page.
+                </div>
                 
                 <form @submit.prevent="submitForm">
                     <div class="row mb-3">
