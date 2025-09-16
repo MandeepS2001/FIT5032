@@ -13,13 +13,21 @@
             <button type="submit">Add Book</button>
         </form>
     </div>
+    <div style="margin-top: 100px">
+        <BookList />
+    </div>
 </template>
 <script>
 import { ref } from 'vue'
 import db from '../firebase/init'
 import { collection, addDoc } from 'firebase/firestore';
 
+import BookList from '@/components/BookList.vue';
+
 export default {
+    components: {
+        BookList
+    },
     setup() {
         const isbn = ref('');
         const name = ref('');
