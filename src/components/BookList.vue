@@ -2,6 +2,13 @@
     <div class="container mt-4">
         <h1>Books with ISBN > 1000 </h1>
 
+        <!-- Query Buttons -->
+        <div class="mb-3">
+            <button @click="fetchBooks('where')" class="btn btn-primary me-2">WHERE: ISBN > 1000</button>
+            <button @click="fetchBooks('order')" class="btn btn-primary me-2">ORDER BY: Name ASC</button>
+            <button @click="fetchBooks('limit')" class="btn btn-primary">LIMIT: 5 books</button>
+        </div>
+
         <!-- Books List -->
         <div class="card">
             <div class="card-header">
@@ -48,7 +55,7 @@
 <script>
 import { onMounted, ref } from 'vue'
 import db from '../firebase/init'
-import { collection, query, where, getDocs, limit, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, where, getDocs, limit, orderBy, doc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 export default {
     setup() {
@@ -57,17 +64,24 @@ export default {
         const editingBook = ref(null)
         const editForm = ref({ name: '', isbn: '' })
 
-        // Fetch books with ISBN > 1000
-        const fetchBooks = async () => {
+        const fetchBooks = async (queryType) => {
             try {
-                const q = query(collection(db, 'books'), where('isbn', '>', 1000), limit(100))
+                let q = collection(db, 'books')
+
+                if (queryType === 'where') {
+                    q = query(q, where('isbn', '>', 1000))
+                } else if (queryType === 'order') {
+                    q = query(q, orderBy('name', 'asc'))
+                } else if (queryType === 'limit') {
+                    q = query(q, limit(5))
+                }
+
                 const querySnapshot = await getDocs(q)
                 const booksArray = []
                 querySnapshot.forEach((doc) => {
                     booksArray.push({ id: doc.id, ...doc.data() })
                 })
                 books.value = booksArray
-                console.log('Books with ISBN > 1000:', booksArray)
             } catch (e) {
                 console.error('Error:', e)
             }
@@ -88,7 +102,7 @@ export default {
                 })
                 editingBook.value = null
                 message.value = 'Book updated!'
-                fetchBooks()
+                fetchBooks('where')
             } catch (e) {
                 console.error('Error updating:', e)
             }
@@ -106,7 +120,7 @@ export default {
                     await deleteDoc(doc(db, 'books', bookId))
                     books.value = books.value.filter(book => book.id !== bookId)
                     message.value = 'Book deleted!'
-                    fetchBooks()
+                    fetchBooks('where')
                 } catch (e) {
                     console.error('Error deleting:', e)
                 }
@@ -114,12 +128,12 @@ export default {
         }
 
         onMounted(() => {
-            fetchBooks()
+            fetchBooks('where')
         })
 
         return {
             books, message, editingBook, editForm,
-            editBook, saveBook, cancelEdit, deleteBook
+            fetchBooks, editBook, saveBook, cancelEdit, deleteBook
         }
     }
 }
