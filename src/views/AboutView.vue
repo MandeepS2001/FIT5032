@@ -2,24 +2,27 @@
   <div class="about">
     <!-- Bootstrap Header -->
     <BHeader />
-    
+
     <div class="container mt-4">
       <div class="row">
         <div class="col-md-8">
           <h1>About Our Library</h1>
-          <p class="lead">Welcome to our digital library! We're dedicated to providing a vast collection of books and resources to our community.</p>
-          
+          <p class="lead">Welcome to our digital library! We're dedicated to providing a vast collection of books and
+            resources to our community.</p>
+
           <div class="row mt-4">
             <div class="col-md-6">
               <h3>Our Mission</h3>
-              <p>To provide accessible, high-quality educational resources to students, researchers, and community members.</p>
+              <p>To provide accessible, high-quality educational resources to students, researchers, and community
+                members.</p>
             </div>
             <div class="col-md-6">
               <h3>Our Collection</h3>
-              <p>We offer a comprehensive range of digital and physical resources including books, journals, databases, and multimedia content.</p>
+              <p>We offer a comprehensive range of digital and physical resources including books, journals, databases,
+                and multimedia content.</p>
             </div>
           </div>
-          
+
           <div class="mt-4">
             <h3>Contact Information</h3>
             <p><strong>Email:</strong> library@example.com</p>
@@ -27,8 +30,8 @@
             <p><strong>Address:</strong> 123 Library Street, City, State 12345</p>
           </div>
         </div>
-        
-        <div class="col-md-4">
+
+        <div class="col-md-4" v-if="isAuthenticated">
           <div class="card">
             <div class="card-header bg-success text-white">
               <h5 class="mb-0">Welcome, {{ currentUser }}!</h5>
@@ -44,6 +47,22 @@
             </div>
           </div>
         </div>
+        <div class="col-md-4" v-else>
+          <div class="card">
+            <div class="card-header bg-warning text-dark">
+              <h5 class="mb-0">Not Logged In</h5>
+            </div>
+            <div class="card-body">
+              <p class="card-text">Please log in to access all features.</p>
+              <div class="d-grid">
+                <router-link to="/FireLogin" class="btn btn-primary">
+                  <i class="bi bi-box-arrow-in-right me-2"></i>
+                  Login
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -52,19 +71,38 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { onAuthStateChanged, signOut, getAuth } from "firebase/auth";
 import BHeader from '../components/BHeader.vue';
 
 const router = useRouter();
 const currentUser = ref('');
+const isAuthenticated = ref(false);
+const auth = getAuth();
 
 onMounted(() => {
-  currentUser.value = localStorage.getItem('currentUser') || 'User';
+  // Listen to Firebase auth state changes
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isAuthenticated.value = true;
+      currentUser.value = user.email;
+      console.log('Firebase user logged in:', user.email);
+    } else {
+      isAuthenticated.value = false;
+      currentUser.value = '';
+      console.log('Firebase user logged out');
+    }
+  });
 });
 
-const handleLogout = () => {
-  localStorage.removeItem('isAuthenticated');
-  localStorage.removeItem('currentUser');
-  router.push('/login');
+const handleLogout = async () => {
+  console.log('Current user before logout:', currentUser.value);
+  try {
+    await signOut(auth);
+    console.log('Current user after logout:', currentUser.value);
+    router.push('/FireLogin');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 };
 </script>
 

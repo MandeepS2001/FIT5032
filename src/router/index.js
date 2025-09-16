@@ -53,17 +53,7 @@ const router = createRouter({
 
 // Navigation guard to check authentication
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('isAuthenticated') === 'true'
-
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    // Redirect to access denied page if trying to access protected route
-    next('/access-denied')
-  } else if (to.path === '/login' && isAuthenticated) {
-    // Redirect authenticated users away from login page
-    next('/about')
-  } else {
-    next()
-  }
+  next()
 })
 
 export default router

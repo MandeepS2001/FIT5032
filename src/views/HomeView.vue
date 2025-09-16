@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
+import { onAuthStateChanged, getAuth } from 'firebase/auth';
 import BHeader from '../components/BHeader.vue';
 
 const formData = ref({
@@ -17,15 +18,22 @@ const formData = ref({
 const submittedCards = ref([]);
 const isAuthenticated = ref(false);
 const currentUser = ref('');
+const auth = getAuth();
 
 onMounted(() => {
-    checkAuthStatus();
+    // Listen to Firebase auth state changes
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            isAuthenticated.value = true;
+            currentUser.value = user.email;
+            console.log('Firebase user logged in:', user.email);
+        } else {
+            isAuthenticated.value = false;
+            currentUser.value = '';
+            console.log('Firebase user logged out');
+        }
+    });
 });
-
-const checkAuthStatus = () => {
-    isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true';
-    currentUser.value = localStorage.getItem('currentUser') || '';
-};
 
 const submitForm = () => {
     validateName(true);
@@ -147,7 +155,7 @@ const validateReason = (blur) => {
                 </div>
                 <div v-else class="alert alert-info mb-4">
                     <i class="bi bi-info-circle me-2"></i>
-                    <strong>Guest User:</strong> You can use the registration form, but please <router-link to="/login" class="alert-link">login</router-link> to access the About page.
+                    <strong>Guest User:</strong> You can use the registration form, but please <router-link to="/FireLogin" class="alert-link">login</router-link> to access the About page.
                 </div>
                 
                 <form @submit.prevent="submitForm">

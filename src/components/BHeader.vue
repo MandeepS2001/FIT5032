@@ -16,7 +16,7 @@
           <router-link to="/addbook" class="nav-link" active-class="active">Add Book</router-link>
         </li>
         <li class="nav-item" v-if="!isAuthenticated">
-          <router-link to="/login" class="nav-link" active-class="active">Login</router-link>
+          <router-link to="/FireLogin" class="nav-link" active-class="active">Login</router-link>
         </li>
         <li class="nav-item" v-else>
           <button @click="handleLogout" class="nav-link btn btn-link">
@@ -37,26 +37,37 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { onAuthStateChanged, signOut, getAuth } from 'firebase/auth';
 
 const router = useRouter();
 const isAuthenticated = ref(false);
 const currentUser = ref('');
+const auth = getAuth();
 
 onMounted(() => {
-  checkAuthStatus();
+  // Listen to Firebase auth state changes
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      isAuthenticated.value = true;
+      currentUser.value = user.email;
+      console.log('Firebase user logged in:', user.email);
+    } else {
+      isAuthenticated.value = false;
+      currentUser.value = '';
+      console.log('Firebase user logged out');
+    }
+  });
 });
 
-const checkAuthStatus = () => {
-  isAuthenticated.value = localStorage.getItem('isAuthenticated') === 'true';
-  currentUser.value = localStorage.getItem('currentUser') || '';
-};
-
-const handleLogout = () => {
-  localStorage.removeItem('isAuthenticated');
-  localStorage.removeItem('currentUser');
-  isAuthenticated.value = false;
-  currentUser.value = '';
-  router.push('/login');
+const handleLogout = async () => {
+  console.log('Current user before logout:', currentUser.value);
+  try {
+    await signOut(auth);
+    console.log('Current user after logout:', currentUser.value);
+    router.push('/FireLogin');
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 };
 </script>
 
