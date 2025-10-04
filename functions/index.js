@@ -44,20 +44,22 @@ exports.addBook = onRequest({
       return
     }
 
-    // Add book to Firestore using Cloud Function
+    // Add book to Firestore using Cloud Function with capitalized data
     const booksCollection = admin.firestore().collection('books')
     const docRef = await booksCollection.add({
       isbn: Number(isbn),
-      name: name,
+      name: name.toUpperCase(), // Capitalize the book name
       createdAt: admin.firestore.FieldValue.serverTimestamp()
     })
 
-    console.log(`Book added with ID: ${docRef.id}, Name: ${name}`)
+    console.log(`Book added with ID: ${docRef.id}, Original Name: ${name}, Capitalized Name: ${name.toUpperCase()}`)
 
     res.status(200).send({ 
       success: true, 
       id: docRef.id,
-      message: `Book added successfully via Cloud Function!`
+      originalName: name,
+      capitalizedName: name.toUpperCase(),
+      message: `Book added successfully via Cloud Function! Name capitalized: ${name} → ${name.toUpperCase()}`
     })
   } catch (error) {
     console.error('Error adding book:', error)

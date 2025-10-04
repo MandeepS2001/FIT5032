@@ -52,11 +52,23 @@
             border: 1px solid #c3e6cb; 
             border-radius: 4px; 
             color: #155724;
-            max-width: 400px;
+            max-width: 500px;
             margin-left: auto;
             margin-right: auto;
         ">
-            {{ message }}
+            <div style="font-weight: bold; margin-bottom: 8px;">✅ {{ message }}</div>
+            <div v-if="capitalizationInfo" style="
+                background: #f8f9fa; 
+                padding: 8px; 
+                border-radius: 3px; 
+                margin-top: 8px;
+                font-family: monospace;
+                font-size: 12px;
+            ">
+                <div><strong>Original Name:</strong> {{ capitalizationInfo.originalName }}</div>
+                <div><strong>Capitalized Name:</strong> {{ capitalizationInfo.capitalizedName }}</div>
+                <div><strong>Book ID:</strong> {{ capitalizationInfo.id }}</div>
+            </div>
         </div>
     </div>
     <div style="margin-top: 100px">
@@ -72,10 +84,12 @@ const name = ref('')
 const loading = ref(false)
 const message = ref('')
 const messageType = ref('')
+const capitalizationInfo = ref(null)
 
 const addBook = async () => {
     loading.value = true
     message.value = ''
+    capitalizationInfo.value = null
     
     try {
         const response = await fetch('https://us-central1-fit5032-week6-5d1b1.cloudfunctions.net/addBook', {
@@ -94,6 +108,11 @@ const addBook = async () => {
         if (response.ok) {
             message.value = result.message
             messageType.value = 'success'
+            capitalizationInfo.value = {
+                originalName: result.originalName,
+                capitalizedName: result.capitalizedName,
+                id: result.id
+            }
             isbn.value = ''
             name.value = ''
             console.log('Book added successfully via Cloud Function:', result)
