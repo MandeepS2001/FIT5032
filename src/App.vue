@@ -1,11 +1,23 @@
 <script setup>
-// Router will handle the components now
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import BHeader from './components/BHeader.vue'
+
+const route = useRoute()
+
+const showHeader = computed(() => {
+  return route.name !== 'CountBookAPI'
+})
 </script>
 
 <template>
   <div id="app">
-    <!-- Router will render the appropriate component here -->
-    <router-view></router-view>
+    <header v-if="showHeader">
+      <BHeader />
+    </header>
+    <main>
+      <router-view></router-view>
+    </main>
   </div>
 </template>
 
