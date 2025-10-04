@@ -25,3 +25,42 @@ exports.countBooks = onRequest({
     res.status(500).send('Error counting books')
   }
 })
+
+exports.addBook = onRequest({
+  cors: true
+}, async (req, res) => {
+  try {
+    // Only allow POST requests
+    if (req.method !== 'POST') {
+      res.status(405).send('Method not allowed')
+      return
+    }
+
+    const { isbn, name } = req.body
+
+    // Validate input
+    if (!isbn || !name) {
+      res.status(400).send('ISBN and name are required')
+      return
+    }
+
+    // Add book to Firestore using Cloud Function
+    const booksCollection = admin.firestore().collection('books')
+    const docRef = await booksCollection.add({
+      isbn: Number(isbn),
+      name: name,
+      createdAt: admin.firestore.FieldValue.serverTimestamp()
+    })
+
+    console.log(`Book added with ID: ${docRef.id}, Name: ${name}`)
+
+    res.status(200).send({ 
+      success: true, 
+      id: docRef.id,
+      message: `Book added successfully via Cloud Function!`
+    })
+  } catch (error) {
+    console.error('Error adding book:', error)
+    res.status(500).send('Error adding book')
+  }
+})
