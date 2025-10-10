@@ -3,18 +3,24 @@ import { initializeApp } from 'firebase/app'
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getFirestore } from 'firebase/firestore'
+import { getAuth } from 'firebase/auth'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: 'AIzaSyA2odFFqGqTe3oqkpGydmDlIGRIZIegVaI',
-  authDomain: 'fit5032-week6-5d1b1.firebaseapp.com',
-  projectId: 'fit5032-week6-5d1b1',
-  storageBucket: 'fit5032-week6-5d1b1.firebasestorage.app',
-  messagingSenderId: '217934602929',
-  appId: '1:217934602929:web:2a62b0c38a7b7f31127890',
+  apiKey: 'AIzaSyD4ciA2l3ViZSRN5QB8OWv6pdToRRg0aP0',
+  authDomain: 'light-lambda-468509-m8.firebaseapp.com',
+  projectId: 'light-lambda-468509-m8',
+  storageBucket: 'light-lambda-468509-m8.firebasestorage.app',
+  messagingSenderId: '222306503389',
+  appId: '1:222306503389:web:7140f582c1b2bb8c26a934',
 }
 
 // Initialize Firebase
-initializeApp(firebaseConfig)
-const db = getFirestore()
+const app = initializeApp(firebaseConfig)
+
+// Initialize services
+const db = getFirestore(app)
+const auth = getAuth(app)
+
 export default db
+export { auth }

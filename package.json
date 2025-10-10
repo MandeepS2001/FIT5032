@@ -1,6 +1,6 @@
 {
-  "name": "fit5032-week1",
-  "version": "0.0.0",
+  "name": "mdan-library",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "engines": {
