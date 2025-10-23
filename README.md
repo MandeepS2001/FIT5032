@@ -176,3 +176,4 @@ Private project - All rights reserved
 ---
 
 Built with ❤️ using Vue.js & Firebase
+# GitHub Actions Test
